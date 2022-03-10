@@ -1,0 +1,7 @@
+{
+  "name": "elmsln-cle-comments",
+  "short_name": "elmsln-cle-comments",
+  "description": "for visualizing comments",
+  "start_url": "/",
+  "display": "standalone"
+}
