@@ -6,6 +6,8 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-tooltip/paper-tooltip.js';
 import '@polymer/neon-animation/neon-animation.js';
+import './drupal-comment.js';
+import '@polymer/iron-ajax/iron-ajax.js'
 
 /**
  * @customElement
@@ -18,39 +20,44 @@ class ElmslnCleComments extends PolymerElement {
         :host {
           display: block;
         }
-        .card-actions a {
-          text-decoration: none;
-          color: var(--paper-orange-a700);
-        }
       </style>
-      <paper-card heading="Title" elevation="5">
-        <div class="card-content">
-          Hey you did a great job on this submission!
-        </div>
-        <div class="card-actions">
-          <a href="node/5#comments" tabindex="-1">
-            <paper-button raised id="view">View</paper-button>
-          </a>
-          <paper-tooltip for="view" animation-delay="0">View comment</paper-tooltip>
-          <a href="node/5/comment/6/edit" tabindex="-1">
-            <paper-button id="edit">Edit</paper-button>
-          </a>
-          <paper-tooltip for="edit" animation-delay="0">Edit comment</paper-tooltip>
-          <a href="node/5/comment/6/delete" tabindex="-1">
-            <paper-icon-button icon="icons:delete-forever" id="delete">Delete</paper-icon-button>
-          </a>
-          <paper-tooltip for="delete" animation-delay="0">Delete comment forever!</paper-tooltip>
-        </div>
-      </paper-card>
+      <iron-ajax
+        auto
+        url="{{dataSource}}"
+        handle-as="json"
+        last-response="{{response}}">
+        >
+      </iron-ajax>
+      <template is="dom-repeat" items="[[_toArray(response)]]" as="comment">
+        <drupal-comment
+        comment-title="{{comment.title}}"
+        action-view="{{comment.view}}"
+        action-edit="{{comment.edit}}"
+        action-delete="{{comment.delete}}"
+        id="commentBody"
+        >
+          {{comment.body}}
+        </drupal-comment>
+      </template>
     `;
   }
   static get properties() {
     return {
-      prop1: {
+      dataSource: {
         type: String,
-        value: 'elmsln-cle-comments'
+        notify: true
+      },
+      response: {
+        type: Array,
+        notify: true
       }
     };
+  }
+
+  _toArray(objt) {
+    return Object.keys(objt).map(function(key) {
+      return objt[key];
+    });
   }
 }
 
